@@ -1,3 +1,9 @@
 # Bookee
 
-Booking application based on NestJS framework and AngularJS
+Sinple booking application
+
+## Tech Stack
+- NestJS
+- Angular
+- TypeScript
+- TypeORM
