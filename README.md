@@ -5,9 +5,7 @@ Simple booking application
 ## Tech Stack
 - NestJS
 - TypeScript
-
-## Features
- - Authentication
+- TypeORM
 
 ## How to run
 - `npm install`
