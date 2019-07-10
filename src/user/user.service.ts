@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { IUser } from './user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -23,24 +24,24 @@ export class UserService {
     return await this.userRepository.save({
       name: name,
       email: email,
-      password: password
+      password: await this.hashPassword(password),
      });
   }
 
   async update(id: number, name: string, email: string, password: string): Promise<any> {
-    const user: IUser = await this.findById(id);
+    const updatedData = {};
 
     if (name) {
-      user['name'] = name;
+      updatedData['name'] = name;
     }
     if (email) {
-      user['email'] = email;
+      updatedData['email'] = email;
     }
     if (password) {
-      user['password'] = password;
+      updatedData['password'] = await this.hashPassword(password);
     }
 
-    return await this.userRepository.update(id, user);
+    return await this.userRepository.update(id, updatedData);
   }
 
   async delete(id: number): Promise<any> {
@@ -53,5 +54,9 @@ export class UserService {
       throw new NotFoundException('Could not found user.');
     }
     return user;
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hashSync(password, await bcrypt.genSaltSync(10));
   }
 }
