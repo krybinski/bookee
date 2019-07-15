@@ -6,6 +6,8 @@ import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -24,10 +26,12 @@ import { ConfigModule } from './config/config.module';
       })
     }),
     ConfigModule,
+    AuthModule,
     UserModule
   ],
   controllers: [
     AppController,
+    AuthController,
     UserController
   ],
   providers: [

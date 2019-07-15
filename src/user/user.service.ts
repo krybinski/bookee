@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { IUser } from './user.interface';
-import * as bcrypt from 'bcrypt';
+import { hashPassword } from '../common/helpers';
 
 @Injectable()
 export class UserService {
@@ -20,11 +23,15 @@ export class UserService {
     return this.findById(id);
   }
 
+  async findOneByEmail(email: string): Promise<IUser> {
+    return await this.userRepository.findOne({ email });
+  }
+
   async create(name: string, email: string, password: string): Promise<IUser> {
     return await this.userRepository.save({
       name: name,
       email: email,
-      password: await this.hashPassword(password),
+      password: await hashPassword(password),
      });
   }
 
@@ -38,7 +45,7 @@ export class UserService {
       updatedData['email'] = email;
     }
     if (password) {
-      updatedData['password'] = await this.hashPassword(password);
+      updatedData['password'] = await hashPassword(password);
     }
 
     return await this.userRepository.update(id, updatedData);
@@ -51,12 +58,8 @@ export class UserService {
   private async findById(id: number): Promise<IUser> {
     const user = await this.userRepository.findOne(id);
     if (!user) {
-      throw new NotFoundException('Could not found user.');
+      throw new NotFoundException('User not found');
     }
     return user;
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    return await bcrypt.hashSync(password, await bcrypt.genSaltSync(10));
   }
 }
