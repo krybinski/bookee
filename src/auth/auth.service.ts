@@ -34,6 +34,10 @@ export class AuthService {
     }
   }
 
+  async register(name: string, email: string, password: string): Promise<IUser> {
+    return await this.userService.create(name, email, password);
+  }
+
   async createToken({ email, password }: IUser) {
     const expiresIn = 60 * 60 * 24;
     const accessToken = await this.jwtService.sign({ email, password });
@@ -58,16 +62,6 @@ export class AuthService {
       throw new HttpException(message, HttpStatus.FORBIDDEN);
     }
   }
-
-  // async createToken(credentials: any) {
-	// 	const user = await this.userService.login(credentials);
-	// 	const expiresIn = 60 * 60;
-	// 	const accessToken = this.jwtService.sign({ email: user.email });
-	// 	return {
-	// 		expiresIn,
-	// 		accessToken,
-	// 	};
-	// }
 
 	async validateUser(email: string): Promise<IUser> {
     const user = await this.userService.findOneByEmail(email);

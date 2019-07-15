@@ -1,10 +1,7 @@
 import {
   Controller,
   Post,
-  Get,
   Body,
-  Headers,
-  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
@@ -22,20 +19,12 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
-  // TODO: add register method
-  // @Post()
-  // register() {
-    // userService.register
-  // }
-
-	// @Get('verify')
-	// @UseGuards(AuthGuard('jwt'))
-	// public async verify(@Headers('Authorization') token: string) {
-	// 	return this.authService.verifyToken(token);
-	// }
-
-	// @Post('token')
-	// public async getToken(@Body() credentials: any) {
-	// 	return await this.authService.createToken(credentials);
-	// }
+  @Post('register')
+  register(
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Body('password') password: string
+  ) {
+    return this.authService.register(name, email, password);
+  }
 }
