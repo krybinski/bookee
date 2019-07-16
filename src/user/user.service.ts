@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { IUser } from './user.interface';
 import { hashPassword } from '../common/helpers';
+import { UserDTO } from '../user/user.dto';
 
 @Injectable()
 export class UserService {
@@ -27,25 +28,25 @@ export class UserService {
     return await this.userRepository.findOne({ email });
   }
 
-  async create(name: string, email: string, password: string): Promise<IUser> {
+  async create(data: UserDTO): Promise<IUser> {
     return await this.userRepository.save({
-      name: name,
-      email: email,
-      password: await hashPassword(password),
+      name: data.name,
+      email: data.email,
+      password: await hashPassword(data.password),
      });
   }
 
-  async update(id: number, name: string, email: string, password: string): Promise<any> {
+  async update(id: number, data: UserDTO): Promise<any> {
     const updatedData = {};
 
-    if (name) {
-      updatedData['name'] = name;
+    if (data.name) {
+      updatedData['name'] = data.name;
     }
-    if (email) {
-      updatedData['email'] = email;
+    if (data.email) {
+      updatedData['email'] = data.email;
     }
-    if (password) {
-      updatedData['password'] = await hashPassword(password);
+    if (data.password) {
+      updatedData['password'] = await hashPassword(data.password);
     }
 
     return await this.userRepository.update(id, updatedData);

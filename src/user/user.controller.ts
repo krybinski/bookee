@@ -11,12 +11,11 @@ import {
 import { UserService } from './user.service';
 import { IUser } from './user.interface';
 import { JwtAuthGuard } from '../auth/auth.guard';
+import { UserDTO } from './user.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -30,22 +29,13 @@ export class UserController {
   }
 
   @Post()
-  create(
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('password') password: string
-  ): Promise<IUser> {
-    return this.userService.create(name, email, password);
+  create(@Body() data: UserDTO): Promise<IUser> {
+    return this.userService.create(data);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: number,
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('password') password: string
-  ): Promise<any> {
-    return this.userService.update(id, name, email, password);
+  update(@Param('id') id: number, @Body() data: UserDTO): Promise<any> {
+    return this.userService.update(id, data);
   }
 
   @Delete(':id')

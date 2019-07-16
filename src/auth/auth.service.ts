@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 import { comparePasswords } from '../common/helpers';
 import { IUser } from '../user/user.interface';
 import { MESSAGE } from '../common/constants';
+import { UserDTO } from '../user/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,9 +19,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string) {
-    const user = await this.validateUser(email);
-    const isPasswordValid = await comparePasswords(password, user.password);
+  async login(data: UserDTO) {
+    const user = await this.validateUser(data.email);
+    const isPasswordValid = await comparePasswords(data.password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(MESSAGE.AUTH.PASSWORD_IS_NOT_VALID);
@@ -34,8 +35,8 @@ export class AuthService {
     }
   }
 
-  async register(name: string, email: string, password: string): Promise<IUser> {
-    return await this.userService.create(name, email, password);
+  async register(data: UserDTO): Promise<IUser> {
+    return await this.userService.create(data);
   }
 
   async createToken({ email, password }: IUser) {
