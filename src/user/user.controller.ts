@@ -14,11 +14,11 @@ import { JwtAuthGuard } from '../auth/auth.guard';
 import { UserDTO } from './user.dto';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll(): Promise<IUser[]> {
     return this.userService.findAll();
   }
